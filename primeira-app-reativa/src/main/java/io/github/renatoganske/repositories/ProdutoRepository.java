@@ -1,6 +1,7 @@
 package io.github.renatoganske.repositories;
 
 import io.github.renatoganske.entities.Produto;
+import io.quarkus.runtime.configuration.SystemOnlySourcesConfigBuilder;
 import io.smallrye.mutiny.Multi;
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -44,6 +45,8 @@ public class ProdutoRepository {
                 .range(0,20)
                 .onItem().invoke(this::imprimirNoConsole)
                 .onItem().invoke(this::pausar)
-                .onItem().transform(this::gerarNovoProduto);
+                .onItem().transform(this::gerarNovoProduto)
+                .onCancellation().invoke(() -> System.out.println("O usuário cancelou a requisição."))
+                .onTermination().invoke(() -> System.out.println("A requisição foi terminada."));
     }
 }
